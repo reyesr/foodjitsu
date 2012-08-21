@@ -4,6 +4,8 @@ table.foodsheet {
 	
 	border-collapse:collapse;
     border-spacing:0;
+    padding: 4px;
+    margin: 5px;
 }
 
 table.foodsheet th {
@@ -21,6 +23,7 @@ table.foodsheet td.foodsheet-group {
 	background-color: black;
 	color: white;
 	text-align: left;
+	padding-left:1em;
 }
 
 td.foodsheet-col1 {

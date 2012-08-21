@@ -5,24 +5,31 @@ enyo.kind({
 		storage: undefined,
 	},
 	foods: [],
-	internalData: {},
+	internalData: undefined,
 	
 	components: [],
 	
 	clear: function() {
 		this.destroyClientControls();
+		this.internalData = undefined;
 		this.foods = [];
 		this.render();
 	},
 	
 	addFood: function(foodId) {
 		this.foods.push(foodId);
+		this.update();
 	},
 
+	update: function() {
+		var tab = this.createInternalData();
+		this.createTable(tab);
+	},
+	
 	// Creates an internal representation of the form:
 	// { 
 	//    foods: [ {name: name, data: [ number1,number2 ] } ... ],
-	//    nutrients: [ {type: "group", name: name}, {type: "nutrient", name: "name", unit: unit }... ]
+	//    nutrients: [ {type: "group", name: name}, {id: id, type: "nutrient", name: "name", unit: unit }... ]
 	// }
 	createInternalData: function() {
 		var result = {};
@@ -49,71 +56,78 @@ enyo.kind({
 
 		console.log("FOODS:");
 		console.log(foods);
-		
+
+		var nutrients = [];
 		for (var grp in ngroups) {
 			var grpname = this.storage.getNutrimentGroupName(grp);
-			lines.push(grpname);
+			nutrients.push({name: grpname, type: "group"});
 			
 			for (var i=0,max=ngroups[grp].length; i<max; ++i) {
 				var line = [];
 				lines.push(line);
-
-				var nutriment = this.storage.getNutriment(ngroups[grp][i]);
-				console.log("Nutriment " + enyo.json.stringify(nutriment));
-				line.push(nutriment.label);
-				
-				for (var j=0; j<foods.length; ++j) {
-					if (nutriment.id < foods[j].data.length) {
-						line.push(foods[j].data[nutriment.id]);
-					}
-				}
+				var n = this.storage.getNutriment(ngroups[grp][i]);
+				nutrients.push({name: n.label, type: "nutrient", unit: n.unit, id: n.id});
 			}
 		}
-		
-		console.log("SHEET RESULT");
-		console.log(lines);
+		console.log("NUTRIENTS:");
+		console.log(nutrients);
 
-		var comps = [];
-		var tline = [];
-		for (var i=0; i<header.length; ++i) {
-			tline.push({tag: "th", content: header[i]})
-		}
-		comps.push({ tag:"thead", components: [{ components: tline, tag: "tr"}]});
-
-		for (var i=0; i<lines.length; ++i) {
-			var line = lines[i];
-			if (typeof line == "string") {
-				comps.push({tag: "tr", components: [{tag:"td", attributes: {colspan: foods.length+1}, classes: "foodsheet-group", content: line}]});
-			} else {
-				tline = [];
-				for (var j=0; j<lines[i].length; ++j) {
-					var value = lines[i][j];
-					var o = {tag: "td", content: value};
-					if (j==0) {
-						o.classes = "foodsheet-col1";
-					} else {
-						value = parseFloat(value.toString());
-						if (!value) {
-							value = "-";
-						} else if (value%1 == 0) {
-							value = value.toFixed(0);
-						} else {
-							value = value.toFixed(2);
-						}
-						o.content = value;
-					}
-					tline.push(o);
+		var foodarray = [];
+		for (var index=0; index<foods.length; ++index) {
+			var obj = {name: foods[index].label, data: []};
+			for (var n=0; n<nutrients.length; ++n) {
+				if (nutrients[n].type == "nutrient") {
+					obj.data.push(foods[index].data[nutrients[n].id]);
 				}
-				comps.push({tag: "tr", components: tline});
 			}
-			
+			foodarray.push(obj);
 		}
+		console.log("FOODARR:");
+		console.log(foodarray);
 		
-		var obj = {tag: "table", classes: "foodsheet", components: [{tag:"tbody", components: comps}]};
-
+		return {foods: foodarray, nutrients: nutrients};
 	},
 	
-	createTable: function() {
+	createTable: function(obj) {
+		this.internalData = obj;
+		
+		var headers = [{tag:"th", content: ""}];
+		for (var i=0; i<obj.foods.length; ++i) {
+			headers.push({tag:"th", content: obj.foods[i].name});
+		}
+		
+		var lines = [];
+		var nutrindex = -1;
+		for (var i=0; i<obj.nutrients.length; ++i) {
+			var line = {tag:"tr", components: []};
+			if (obj.nutrients[i].type == "group") {
+				line.components.push({tag:"td", content: obj.nutrients[i].name, attributes: {colspan: obj.foods.length+1}, classes: "foodsheet-group"});
+			} else {
+				line.components.push({tag:"td", content: obj.nutrients[i].name, classes: "foodsheet-col1"});
+				++nutrindex;
+				for (var f=0; f<obj.foods.length; ++f) {
+					line.components.push({tag:"td", content: obj.foods[f].data[nutrindex]});
+				}
+			}
+			lines.push(line);
+		}
+
+		var result = {tag: "table", classes: "foodsheet", components: [
+		                  {tag:"thead", components: headers},
+						  {tag:"tbody", components: lines}
+					]};
+		console.log(result);
+		this.destroyClientControls();
+		if (lines.length > 0) {
+			this.createComponent(result);
+		}
+		
+//		console.log(this);
+		this.render();
+		
+	},
+	
+	createTable_old: function() {
 		var size = this.foods.length;
 		var ngroups =  this.storage.getGroupedDisplayedNutriments();
 		var header = [];

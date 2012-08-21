@@ -4,7 +4,7 @@ enyo.kind({
     kind : enyo.Panels,
     classes : "panels-sample-flickr-panels enyo-unselectable enyo-fit",
     arrangerKind : "CollapsingArranger",
-	lang: new l10n({language: null, acceptedLanguages: ["fr", "en"]}),
+	lang: new l10n({language: null, acceptedLanguages: ["fr", "en"], defaultFile: "app"}),
 
     data: new datasource.NutritionData(),
     databaseLanguage: "en",
@@ -51,7 +51,7 @@ enyo.kind({
    	                                	   content: "Your nutrition facts checker"
    	                                   },
    	                                   {
-   	                                	   style: "text-align:center;",
+   	                                	   style: "text-align:center; margin-top:3em;",
    	                                	   components: [
    	                                	                {content: "Choose your language"},
    	                	                                {kind: "onyx.MenuDecorator", onSelect: "languageSelected", components: [
@@ -66,7 +66,7 @@ enyo.kind({
                                       ]
                	                },
                	                {kind:"enyo.Scroller", fit: true, components: [
-	                                   { content: "Favorites" }
+	                                   { name: "favorites", kind: "FavoriteList", onSelected: "favoriteSelected" }
                                    ]
             	                },
              	                {kind:"enyo.Scroller", fit: true, components: [
@@ -92,14 +92,15 @@ enyo.kind({
 			                                  {kind:"onyx.IconButton", src:"assets/icons/32x32/favorite.png", ontap:"nameFavoritePopup"},
 			                    			  {kind: onyx.Button, content: "Nutrients list", ontap: "changeNutrients"}
 			                    ] },
-			                    {name: "addFavPopup", classes: "onyx-sample-popup", kind: "onyx.Popup", centered: true, modal: true, floating: true, onShow: "popupShown", onHide: "popupHidden", components: [
-			                        {content: "Please name this nutrition sheet"},                                                                                                                                                                        
-                      				{kind: "onyx.InputDecorator", components: [
-                      					{kind: "onyx.Input", name: "favoriteNameInput"}
-                      				]},
-                      				{tag: "br"},
-                      				{kind: "onyx.Button", content: "Cancel", ontap: "closeModalPopup"},
-                      				{kind: "onyx.Button", style:"float:right", content: "Add", ontap: "addFavorite", popup: "lightPopup"}
+			                    {name: "addFavPopup", classes: "onyx-sample-popup", 
+			                    	kind: "onyx.Popup", centered: true, modal: true, floating: true, onShow: "popupShown", onHide: "popupHidden", scrim: true, components: [
+					                        {content: "Please name this nutrition sheet", style: "padding-top:2em;padding-left:2em;padding-right:2em;padding-bottom:1em"},                                                                                                                                                                        
+		                      				{kind: "onyx.InputDecorator", style: "margin-left:2em;", components: [
+		                      					{kind: "onyx.Input", name: "favoriteNameInput"}
+		                      				]},
+		                      				{tag: "br"},
+		                      				{kind: "onyx.Button", content: "Cancel", ontap: "closeAddFavPopup"},
+		                      				{kind: "onyx.Button", style:"float:right", content: "Add", ontap: "addFavorite", popup: "lightPopup"}
                       			]},
 			             {kind:"enyo.Scroller", fit: true, components: [{ name: "sheet", kind: "NutritionalSheet" }]}
 			],
@@ -140,6 +141,7 @@ enyo.kind({
     		this.$.languageChoice.setContent("English");
     	}
     	this.lang.translateControl(this);
+    	this.lang.translateControl(this.$.favorites);
     	var self = this;
     	this.lang.t(this.$.search.placeholder, this.$.search, function(r) {
     		self.$.search.setPlaceholder(r);
@@ -180,7 +182,6 @@ enyo.kind({
 //    	console.log("Food selected: " + inSender + " / " + inEvent.originator.getSelectedFood());
 //    	console.log(arguments);
     	this.$.sheet.addFood(inEvent.originator.getSelectedFood());
-    	this.updateFoodDisplay();
     	var bounds = this.getBounds();
     	if (bounds.width < 800) {
     	    this.setIndex(1);
@@ -190,7 +191,7 @@ enyo.kind({
     },
     
     updateFoodDisplay: function() {
-    	this.$.sheet.createTable();
+    	this.$.sheet.update();
     },
 
     radioActivated: function(inSender, inEvent) {
@@ -284,17 +285,32 @@ enyo.kind({
 	},
 	
 	nameFavoritePopup: function() {
-		this.$.addFavPopup.show();
+		if (this.$.sheet.internalData) {
+			this.$.addFavPopup.show();
+		}
+	},
+	closeAddFavPopup: function() {
+		this.$.addFavPopup.hide();
 	},
 	addFavorite: function(inSender, inEvent) {
 		console.log("Add fav: " + this.$.favoriteNameInput.getValue());
 		console.log(inSender);
+		this.$.favorites.add(this.$.favoriteNameInput.getValue(), this.$.sheet.internalData);
+		this.$.addFavPopup.hide();
+		this.setLeftPane("favorite");
+		return true;
 	},
 	clearSheet: function() {
 		this.$.sheet.clear();
 	},
 	changeNutrients: function() {
 		this.setLeftPane("prefs");
+	},
+	
+	favoriteSelected: function(inSender, inEvent) {
+		console.log("=== FAV SEL");
+		console.log(arguments);
+		this.$.sheet.createTable(inEvent.data);
 	}
 	
 });

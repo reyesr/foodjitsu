@@ -8,6 +8,8 @@ enyo.depends(
 	"NutritionalSheet.js",
 	"NutrimentList.js",
 	"FoodResultList.js",
+	"FavoriteList.js",
+	"FavoriteList.css",
 	"l10n.js",
 	"App.css",
 	"App.js",

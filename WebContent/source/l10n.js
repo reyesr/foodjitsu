@@ -15,7 +15,8 @@ enyo.kind({
 		language: window.navigator.userLanguage || window.navigator.language,
 		rootFiles: "assets/locales",
 		useRegion: true,
-		prefix: ""
+		prefix: "",
+		defaultFile: null
 	},
 	
 	constructor: function() {
@@ -87,6 +88,9 @@ enyo.kind({
 //			}
 			
 			this.getTranslationFile(obj.name, function(data) {
+				if (!data) {
+					return;
+				}
 //				console.log("GOT TRANSLATION FILE !!!" + data);
 //				console.log(data);
 //				console.log(obj);
@@ -115,8 +119,8 @@ enyo.kind({
 		
 		if (!this.translationFiles[name]) {
 			this.translationFiles[name] = new l10najaxproxy();
-			
-			var urlBase = this.rootFiles + ((this.rootFiles[this.rootFiles.length-1] == '/')?"":"/") + name;
+			var root = this.rootFiles + ((this.rootFiles[this.rootFiles.length-1] == '/')?"":"/");
+			var urlBase = root + name;
 			var self = this;
 //			console.log("URLBASE : " + urlBase);
 			var urls = [];
@@ -124,7 +128,13 @@ enyo.kind({
 				urls.push(urlBase + "." + this.getIso() + "-" +this.getRegion() + ".json?time="+this.timeId);
 			}
 			urls.push(urlBase + "." + this.getIso() + ".json?time="+this.timeId);
-
+			if (this.defaultFile && name != this.defaultFile) {
+				if (useRegion && this.getRegion()) {
+					urls.push(root + this.defaultFile + "." + this.getIso() + "-" +this.getRegion() + ".json?time="+this.timeId);
+				}
+				urls.push(root + this.defaultFile + "." + this.getIso() + ".json?time="+this.timeId);
+			}
+			
 			this.translationFiles[name].start(urls);
 		}
 		

@@ -1,0 +1,11 @@
+div.fav-odd {
+	background-color: #444444;
+	padding-top: 0.5em;	
+	padding-bottom: 0.5em;	
+}
+
+div.fav-even {
+	background-color: #777777;
+	padding-top: 0.5em;	
+	padding-bottom: 0.5em;	
+}
