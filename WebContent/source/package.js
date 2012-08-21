@@ -1,0 +1,15 @@
+enyo.depends(
+	"$lib/layout",
+	"$lib/onyx",
+	"datasource/LocalStorage.js",
+	"datasource/HttpCsvReader.js",
+	"datasource/NutritionData.js",
+	"NutritionalSheet.css",
+	"NutritionalSheet.js",
+	"NutrimentList.js",
+	"FoodResultList.js",
+	"l10n.js",
+	"App.css",
+	"App.js",
+	"logo.css"
+);
