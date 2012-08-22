@@ -126,8 +126,8 @@ enyo.kind({
     	this.inherited(arguments);
     	this.data.setup("assets/data", enyo.bind(this, this.ready));
 
-    	if (this.debugFlag) {
-    		this.$.l10ndump.show();
+    	if (!this.debugFlag) {
+    		this.$.l10ndump.hide();
     	}
     	
     	var deflang = this.storage.get("language", this.lang.getBrowserLanguage());
