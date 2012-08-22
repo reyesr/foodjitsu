@@ -74,9 +74,17 @@ enyo.kind({
                                                   			tag: "a", style: "color: white",
                                                   			content: "https://github.com/reyesr/foodjitsu",
                                                   			attributes: {href: "https://github.com/reyesr/foodjitsu"}
-                                                  		}
+                                                  		},
    	                                	   ]
-   	                                   }
+   	                                   },
+                                		{ tag: "div", style: "color: white; padding:1em; text-align:center;",
+                                			content: "The nutritional data provided by the The Canadian Nutrient File (CNF) Database.",
+                                			attributes: {href: "http://www.hc-sc.gc.ca/fn-an/nutrition/fiche-nutri-data/index-eng.php"}
+                                		},
+                                		{ tag: "div", style: "color: white; padding:1em; text-align:center;",
+                                 			content: "This program and its data are provided as is without warranty or condition of any kind"
+                                 		}
+
                                       ]
                	                },
                	                {kind:"enyo.Scroller", fit: true, components: [
@@ -169,9 +177,9 @@ enyo.kind({
     foodSelected: function(inSender, inEvent) {
     	this.$.sheet.addFood(inEvent.originator.getSelectedFood());
     	var bounds = this.getBounds();
-    	if (bounds.width < 800) {
-    	    this.setIndex(1);
-    	}
+//    	if (bounds.width < 800) {
+//    	    this.setIndex(1);
+//    	}
     	return true;
     },
     

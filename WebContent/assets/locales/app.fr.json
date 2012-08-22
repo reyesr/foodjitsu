@@ -11,5 +11,8 @@
 	"This program is free software, distributed under the terms of the GPL3": "Ce programme est un logiciel libre redistribuable sous les termes de la licence GPLv3",
 	"Choose your language": "Choisissez votre langue",
 	"To look up a specific food, type its name in the search box above.": "Pour chercher un aliment, tapez son nom dans la boite de recherche située en haut.",
-	"Your nutrition facts checker": "Vérifiez vos données nutritionnelles"
+	"Your nutrition facts checker": "Vérifiez vos données nutritionnelles",
+	"The nutritional data provided by the The Canadian Nutrient File (CNF) Database.": "Les données nutritionelles sont fournies par le fichier canadien sur les éléments nutritifs (FCÉN).",
+	"This program and its data are provided as is without warranty or condition of any kind": "Ce programme et ses données sont fournis tel quel, sans garantie ni condition de quelque nature que ce soit."
+	
 }
