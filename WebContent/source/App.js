@@ -177,9 +177,9 @@ enyo.kind({
     foodSelected: function(inSender, inEvent) {
     	this.$.sheet.addFood(inEvent.originator.getSelectedFood());
     	var bounds = this.getBounds();
-//    	if (bounds.width < 800) {
-//    	    this.setIndex(1);
-//    	}
+    	if (bounds.width < 800) {
+    	    this.setIndex(1);
+    	}
     	return true;
     },
     
