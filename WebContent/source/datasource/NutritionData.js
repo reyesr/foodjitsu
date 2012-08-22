@@ -27,7 +27,6 @@ enyo.kind({
 	},
 	
 	setup: function(baseUrl, callback) {
-        console.log("Creating NutritionData");
         this.baseUrl = baseUrl;
         var self = this;
 
@@ -61,7 +60,6 @@ enyo.kind({
 	},
 
 	displayedNutrimentsChanged: function() {
-		console.log("saving displayedNutriments");
 		this.storage.set("nutriments.displayed", this.displayedNutriments);
 	},
 	
@@ -109,7 +107,6 @@ enyo.kind({
 		lang = lang || this.language;
 		if (this.nutriments[nutId]) {
 			var n = this.nutriments[nutId];
-//			console.log("Get Nutriment for " + enyo.json.stringify(n));
 			return {id: nutId, grp: n.grp, unit: n.unit, label: n.name[lang] };
 		}
 		return undefined;

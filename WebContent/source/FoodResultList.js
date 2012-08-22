@@ -1,7 +1,10 @@
 enyo.kind({
 	name: "FoodResultList",
 	
-	components: [],
+	components: [
+	    {name: "header", content: "No item found. Type a food in the search box above.", style: "padding:1em;"},
+	    {name: "spinner", kind: "onyx.Spinner", style: "text-align: center; padding 2em;", isShowing: false}
+	],
 	fit: true, 
 	
 	events: {
@@ -10,19 +13,31 @@ enyo.kind({
 		onFoodSelected: "",
 	},
 
+	setSpinner: function(b) {
+		if (b) {
+			this.$.header.hide();
+			this.$.spinner.show();
+		} else {
+			this.$.header.show();
+			this.$.spinner.hide();
+		}
+	},
+	
 	published: {
 		selectedFood: undefined
 	},
 	
 	setData: function(data) {
-		var root = [];
-		var remaining = [];
-
 		this.destroyClientControls();
 		var res = this.joinCommaSeparated(data);
-		console.log(res);
 		var comps = this.createNodes(res);
 		this.createComponents(comps);
+
+		if (this.$.header && this.$.spinner) {
+			this.$.header.hide();
+			this.$.spinner.hide();
+		}
+
 		this.render();
 	},
 	
@@ -45,13 +60,11 @@ enyo.kind({
 		for (var i=0, max=datalist.length; i<max; ++i) {
 			var res = datalist[i].label.match(pattern);
 			if (res) {
-//				console.log(res);
 				if (!result[res[1]]) {
 					result[res[1]] = [];
 				}
 				result[res[1]].push({full: res[0], label: res[2], id: datalist[i].id });
 			} else {
-				console.log(datalist[i]);
 				if (!result["misc"]) {
 					result["misc"] = [];
 				}
@@ -64,19 +77,12 @@ enyo.kind({
 	
 	tapped:  function(inSender, inEvent) {
 		var node = inEvent.originator;
-		//this.$.selection.select(node.id, node);
-		console.log("tapped: " + node.id);
-		console.log(node.foodId);
 		this.setSelectedFood(node.foodId);
 		this.doFoodSelected();
 	},
 	select: function(inSender, inEvent) {
-		console.log("select: " + inEvent);
-//		inEvent.data.$.caption.applyStyle("background-color", "lightblue");
 	},
 	deselect: function(inSender, inEvent) {
-		console.log("deselect: " + inEvent);
-//		inEvent.data.$.caption.applyStyle("background-color", null);
 	}
 
 });

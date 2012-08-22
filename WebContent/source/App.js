@@ -7,6 +7,7 @@ enyo.kind({
 	lang: new l10n({language: null, acceptedLanguages: ["fr", "en"], defaultFile: "app"}),
 
     data: new datasource.NutritionData(),
+    storage: new datasource.LocalStorage({prefix: "app_"}),
     databaseLanguage: "en",
     debugFlag: false,
     
@@ -25,9 +26,9 @@ enyo.kind({
            	                         ]},
                                   {kind: "onyx.InputDecorator", components: [
                     				{name: "search", kind: "onyx.Input", placeholder: "Search food", onchange:"search"},
-                    				{kind: "Image", src: "assets/icons/22x22/search-gray.png"}
+                    				{kind: "Image", src: "assets/icons/22x22/search-gray.png", ontap: "search"}
                     			  ]},
-                    			  {kind: onyx.Button, content: "?", ontap: "outputLocaleTemplate"},
+                    			  {name: "l10ndump", kind: onyx.Button, content: "?", ontap: "outputLocaleTemplate", isShowing: false},
                     			  {
                     				  kind: onyx.Grabber
                     			  }
@@ -51,7 +52,11 @@ enyo.kind({
    	                                	   content: "Your nutrition facts checker"
    	                                   },
    	                                   {
-   	                                	   style: "text-align:center; margin-top:3em;",
+   	                                	   style: "padding: 1em; text-align: center;",
+   	                                	   content: "To look up a specific food, type its name in the search box above."
+   	                                   },
+   	                                   {
+   	                                	   style: "text-align:center; margin-top:1em;",
    	                                	   components: [
    	                                	                {content: "Choose your language"},
    	                	                                {kind: "onyx.MenuDecorator", onSelect: "languageSelected", components: [
@@ -61,6 +66,15 @@ enyo.kind({
                                                   				{content: "Français", lng: "fr"}                                                  			
                                                   			]}
                                                   		]},
+                                                  		{
+                                                  			style: "margin-top-1em; padding:1em;",
+                                                  			content: "This program is free software, distributed under the terms of the GPL3",
+                                                  		},
+                                                  		{
+                                                  			tag: "a", style: "color: white",
+                                                  			content: "https://github.com/reyesr/foodjitsu",
+                                                  			attributes: {href: "https://github.com/reyesr/foodjitsu"}
+                                                  		}
    	                                	   ]
    	                                   }
                                       ]
@@ -74,6 +88,7 @@ enyo.kind({
                                    ]
             	                },
             	                {kind:"enyo.Scroller", fit: true, components: [
+            	                       { content: "Select the nutrients for the charts", style: "padding:1em;" },
             	                       { name: "nutriments", kind: "NutrimentList", onChange: "updateFoodDisplay" }
                                    ]
             	                },
@@ -105,34 +120,19 @@ enyo.kind({
 			             {kind:"enyo.Scroller", fit: true, components: [{ name: "sheet", kind: "NutritionalSheet" }]}
 			],
 		}
-//    		{
-//            	kind: "Panels", 
-//    			name:"mainPanels", 
-//    			fit:true, 
-//    			realtimeFit: true, 
-//    			classes: "panels-sample-panels enyo-border-box enyo-fit panels-sample-flickr-main", 
-//    			components: [
-////					{kind:"enyo.Scroller", components: []},
-//					,
-//					
-//    	 			{content:1, style:"background:orange;"},
-//    	 			{content:2, style:"background:yellow;"},
-//    	 			{content:3, style:"background:green;"},
-//    	 			{content:4, style:"background:blue;"},
-//    	 			{content:5, style:"background:indigo;"},
-//    	 			{content:6, style:"background:violet;"}
-//    	 			]
-//    		} //,
-
     ],
     
     rendered: function() {
     	this.inherited(arguments);
     	this.data.setup("assets/data", enyo.bind(this, this.ready));
+
+    	if (this.debugFlag) {
+    		this.$.l10ndump.show();
+    	}
     	
-    	this.lang.init();
+    	var deflang = this.storage.get("language", this.lang.getBrowserLanguage());
+    	this.lang.init(deflang);
     	
-    	this.data.setLanguage(this.lang.getIso());
     	switch (this.lang.getIso()) {
     	case "fr":
     		this.$.languageChoice.setContent("Français");
@@ -142,6 +142,7 @@ enyo.kind({
     	}
     	this.lang.translateControl(this);
     	this.lang.translateControl(this.$.favorites);
+    	this.data.setLanguage(this.lang.getIso());
     	var self = this;
     	this.lang.t(this.$.search.placeholder, this.$.search, function(r) {
     		self.$.search.setPlaceholder(r);
@@ -152,41 +153,25 @@ enyo.kind({
     	this.$.nutriments.setStorage(this.data);
     	this.$.sheet.setStorage(this.data);
     	
-    	
-    	console.log("THIS NAME: " + this.name);
-    	console.log(this);
-    	
-//    	console.log("LANGS");
-//    	console.log(this.lang);
-//    	this.lang.setLanguage("fr-FR");
-//    	console.log(this.lang);
-//    	
-//    	
-    	// this.lang.language = "fr";
-//    	alert("lang: " + this.lang.browserLanguage + " / " + this.lang.getIso() + " && " + this.lang.getRegion());
-//    	this.search();
+    	this.$.searchResultList.setSpinner();
     },
     
     search: function(inSender, inEvent) {
+    	this.setLeftPane("searchresult");
+    	this.$.searchResultList.setSpinner();
     	var value = this.$.search.getValue();
     	if (value != "") {
         	var res = this.data.searchFood(value);
     	}
-    	// console.log(res);
-//		this.$.leftpan.setIndex(0);
-    	this.setLeftPane("searchresult");
     	this.$.searchResultList.setData(res);
     },
     
     foodSelected: function(inSender, inEvent) {
-//    	console.log("Food selected: " + inSender + " / " + inEvent.originator.getSelectedFood());
-//    	console.log(arguments);
     	this.$.sheet.addFood(inEvent.originator.getSelectedFood());
     	var bounds = this.getBounds();
     	if (bounds.width < 800) {
     	    this.setIndex(1);
     	}
-//	    console.log(this.getBounds());
     	return true;
     },
     
@@ -205,13 +190,11 @@ enyo.kind({
 				this.$.leftpan.setIndex(1);
 				break;
 			}
-			// console.log(inEvent.originator);
 		}
 	},
 	iconGroupActivated: function(inSender, inEvent) {
 		if (inEvent.originator.getActive()) {
 			var selected = inEvent.originator.indexInContainer();
-//			console.log("index of icon: " + selected);
 			switch (selected) {
 			case 0:
 				this.setLeftPane("home");
@@ -229,12 +212,8 @@ enyo.kind({
 		}
 	},
 	setLeftPane: function(index) {
-//    	var bounds = this.getBounds();
-//    	if (bounds.width < 800) {
    	    this.setIndex(0);
-//    	}
 
-//    	console.log("setLeftPane: " + index);
 		switch(index) {
 		case 0:
 		case "home":
@@ -271,17 +250,19 @@ enyo.kind({
 	},
 	
 	languageSelected: function(inSender, inEvent) {
-//		console.log(inSender);
-//		console.log(inEvent);
 		this.$.languageChoice.setContent(inEvent.content);
 		this.lang.setLanguage(inEvent.originator.lng);
 		this.databaseLanguage = inEvent.originator.lng;
 		this.data.language = inEvent.originator.lng;
 		this.lang.retranslateAll();
+		this.storage.set("language", this.lang.getIso());
+		this.$.nutriments.storageChanged();
 	},
 	
 	outputLocaleTemplate: function() {
-		console.log(this.lang.getTemplate());
+		if (console && console.log) {
+			console.log(this.lang.getTemplate());
+		}
 	},
 	
 	nameFavoritePopup: function() {
@@ -293,8 +274,6 @@ enyo.kind({
 		this.$.addFavPopup.hide();
 	},
 	addFavorite: function(inSender, inEvent) {
-		console.log("Add fav: " + this.$.favoriteNameInput.getValue());
-		console.log(inSender);
 		this.$.favorites.add(this.$.favoriteNameInput.getValue(), this.$.sheet.internalData);
 		this.$.addFavPopup.hide();
 		this.setLeftPane("favorite");
@@ -308,8 +287,6 @@ enyo.kind({
 	},
 	
 	favoriteSelected: function(inSender, inEvent) {
-		console.log("=== FAV SEL");
-		console.log(arguments);
 		this.$.sheet.createTable(inEvent.data);
 	}
 	

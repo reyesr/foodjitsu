@@ -27,10 +27,8 @@ enyo.kind({
 	
 	load: function(callback) {
 		var self = this;
-		console.log("ajax: " + this.url);
 		var ajax = new enyo.Ajax({url: this.url, method: "get", handleAs: "text"});
 		ajax.response(this, function(sender, data) {
-//			console.log(response);
 			var len = data.length;
 			for (var i=0; i<len; ) {
 				var next = data.indexOf("\n", i);
