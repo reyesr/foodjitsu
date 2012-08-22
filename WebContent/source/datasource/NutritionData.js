@@ -11,7 +11,7 @@ enyo.kind({
 		
 		storage: new datasource.LocalStorage(),
 		language: "en",
-		displayedNutriments: {},
+		displayedNutriments: {"0":true,"1":true,"4":true,"12":true,"17":true,"18":true,"22":true,"23":true,"24":true,"25":true,"26":true,"27":true,"28":true,"36":true,"37":true,"38":true,"39":true,"40":true,"47":true,"68":true,"100":true,"101":true},
 	},
 	
 	nutriments: {},

@@ -8,18 +8,22 @@ table.foodsheet {
     margin: 5px;
 }
 
-table.foodsheet th {
+table.foodsheet th.foodsheet {
 	width: 10em;
 	padding: 0.5em;
 }
 
-table.foodsheet td {
+table.foodsheet th.foodsheet-col2 {
+}
+
+table.foodsheet td.foodsheet {
 	border-bottom: 1px solid black;
 	text-align: right;
 	padding-right: 2em;
 }
 
 table.foodsheet td.foodsheet-group {
+	border-bottom: 1px solid black;
 	background-color: black;
 	color: white;
 	text-align: left;
@@ -29,6 +33,13 @@ table.foodsheet td.foodsheet-group {
 td.foodsheet-col1 {
 	border-right: 1px solid black;
 	text-align: left;
+	border-bottom: 1px solid black;
+}
+
+td.foodsheet-col2 {
+	text-align: left;
+	padding-left: 0.5em;
+	border-bottom: 1px solid black;
 }
 
 table.foodsheet thead tr th {

@@ -42,14 +42,27 @@ enyo.kind({
 	},
 	
 	createNodes: function(data) {
-		var comps = [ {kind: "Selection", onSelect: "selectDeselect", onDeselect: "selectDeselect"}];
+		var comps = [];
+		var index = 0;
 		for (var k in data) {
 			var arr = data[k];
-			var node = {components:[], kind: "Node", content: k,  expandable: true, expanded: false};
+			
+			var sublist = {showing: false, components:[]};
 			for (var i=0; i<arr.length; ++i) {
-				node.components.push({content: arr[i].label, foodId: arr[i].id, onNodeTap: "tapped", icon_: "assets/knobs_icons/Knob%20Search.png" });
+				sublist.components.push({ foodId: arr[i].id, ontap: "tapped", classes: "searchresult", components: [
+					{ tag:"img", attributes: {src:"assets/icons/24x24/go-next.png"}, style: "float: left;", foodId: arr[i].id },
+					{content: arr[i].label, foodId: arr[i].id} 
+						]});
 			}
+			var header = {tag:"div", ontap:"toggleGroup", gindex:index, classes: "searchresult-head", components: [
+			                      { tag:"img", attributes: {src:"assets/icons/24x24/sign-right.png"}, style: "float: left;", gindex:index },
+			                      { tag: "span", content:k, gindex:index, classes: "searchresult-head-name" },
+			                      { tag: "span", content: ("("+ sublist.components.length + ")"), classes: "searchresult-count"}
+                             ]};
+			var node = {components:[ header, sublist ]};
 			comps.push(node);
+			
+			++index;
 		}
 		return comps;
 	},
@@ -83,6 +96,31 @@ enyo.kind({
 	select: function(inSender, inEvent) {
 	},
 	deselect: function(inSender, inEvent) {
+	},
+	toggleGroup: function(inSender, inEvent) {
+		this.log("toggle group");
+		this.log(inEvent);
+//		if (inEvent.originator && inEvent.originator.parent && inEvent.originator.parent.children[1]) {
+//			inEvent.originator.parent.children[1].setShowing(!inEvent.originator.parent.children[1].getShowing());
+//		}
+		if (inEvent.originator.gindex >= 0) {
+			this.log("INDEX: " + inEvent.originator.gindex);
+			var ctrl = this.getClientControls();
+
+			var element = ctrl[inEvent.originator.gindex].children[1];
+			if (element) {
+				element.setShowing(!element.showing);
+			}
+			
+			var head = ctrl[inEvent.originator.gindex].children[0]
+			this.log(head);
+			if (head && head.children[0] && head.children[0].hasNode()) {
+				var src = element.showing?"assets/icons/24x24/sign-down.png":"assets/icons/24x24/sign-right.png";
+				head.children[0].setAttribute("src", src);
+				head.children[0].render();
+			}
+	//		ctrl[inEvent.originator.gindex].setShowing(this.children[inEvent.originator.gindex].showing);
+		}
 	}
 
 });

@@ -1,0 +1,31 @@
+div.searchresult-head {
+	border-bottom: 1px solid #AAAAAA;
+	vertical-align:text-bottom;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+span.searchresult-head-name {
+	font-weight: bold;
+	padding: 2px;
+	font-size: 1.1em;
+}
+
+.searchresult-count {
+	font-size: 0.8em;
+	text-align:right;
+	margin-left: 0.3em;	
+}
+
+div.searchresult {
+	padding-left: 32px;
+	font-size: 1.0em;
+	border-bottom: 1px solid #AAAAAA;
+	border-top: 1px solid #666666;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+div.searchresult img {
+	float: left;
+}

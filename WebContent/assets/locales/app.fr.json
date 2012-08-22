@@ -1,7 +1,15 @@
 {
 	"Search food": "Chercher un aliment",
-	"Nutriments": "Nutriments",
-	"Favorites": "Favoris",
+	"To add a nutritional data chart here, create a chart, then click on the favorite icon.": "Pour ajouter un tableau nutritionnel dans vos favoris, créez d'abord un tableau puis cliquez sur l'icone de favoris",
+	"Your favorite nutritional data charts.": "Vos tableaux nutritionnels favoris.",
+	"Add": "Ajouter",
+	"Cancel": "Annuler",
+	"Please name this nutrition sheet": "Donnez un nom à ce tableau",
+	"Nutrients list": "Liste de nutriments",
+	"Select the nutrients for the charts": "Choisissez les nutriments qui s'afficheront dans le tableau",
+	"No item found. Type a food in the search box above.": "Pas d'aliment trouvé. Tapez un nom d'aliment dans la boite de recherche ci-dessus.",
+	"This program is free software, distributed under the terms of the GPL3": "Ce programme est un logiciel libre redistribuable sous les termes de la licence GPLv3",
 	"Choose your language": "Choisissez votre langue",
-	"Your nutrition facts checker": "Vos données nutritionnelles"
+	"To look up a specific food, type its name in the search box above.": "Pour chercher un aliment, tapez son nom dans la boite de recherche située en haut.",
+	"Your nutrition facts checker": "Vérifiez vos données nutritionnelles"
 }

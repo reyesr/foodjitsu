@@ -1,7 +1,16 @@
 {
 	"Search food": "Search food",
-	"Nutriments": "Nutriments",
-	"Favorites": "Favorites",
+	"To add a nutritional data chart here, create a chart, then click on the favorite icon.": "To add a nutritional data chart here, create a chart, then click on the favorite icon.",
+	"Your favorite nutritional data charts.": "Your favorite nutritional data charts.",
+	"Add": "Add",
+	"Cancel": "Cancel",
+	"Please name this nutrition sheet": "Please name this nutrition sheet",
+	"Nutrients list": "Nutrients list",
+	"Select the nutrients for the charts": "Select the nutrients for the charts",
+	"No item found. Type a food in the search box above.": "No item found. Type a food in the search box above.",
+	"https://github.com/reyesr/foodjitsu": "https://github.com/reyesr/foodjitsu",
+	"This program is free software, distributed under the terms of the GPL3": "This program is free software, distributed under the terms of the GPL3",
 	"Choose your language": "Choose your language",
+	"To look up a specific food, type its name in the search box above.": "To look up a specific food, type its name in the search box above.",
 	"Your nutrition facts checker": "Your nutrition facts checker"
 }

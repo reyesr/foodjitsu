@@ -78,9 +78,9 @@ enyo.kind({
 	createTable: function(obj) {
 		this.internalData = obj;
 		
-		var headers = [{tag:"th", content: ""}];
+		var headers = [{tag:"th", attributes:{colspan:2}, content: "/100g", classes: "foodsheet-col2"}];
 		for (var i=0; i<obj.foods.length; ++i) {
-			headers.push({tag:"th", content: obj.foods[i].name});
+			headers.push({tag:"th", content: obj.foods[i].name, classes: "foodsheet"});
 		}
 		
 		var lines = [];
@@ -88,12 +88,13 @@ enyo.kind({
 		for (var i=0; i<obj.nutrients.length; ++i) {
 			var line = {tag:"tr", components: []};
 			if (obj.nutrients[i].type == "group") {
-				line.components.push({tag:"td", content: obj.nutrients[i].name, attributes: {colspan: obj.foods.length+1}, classes: "foodsheet-group"});
+				line.components.push({tag:"td", content: obj.nutrients[i].name, attributes: {colspan: obj.foods.length+2}, classes: "foodsheet-group"});
 			} else {
 				line.components.push({tag:"td", content: obj.nutrients[i].name, classes: "foodsheet-col1"});
+				line.components.push({tag:"td", content: obj.nutrients[i].unit, classes: "foodsheet-col2"});
 				++nutrindex;
 				for (var f=0; f<obj.foods.length; ++f) {
-					line.components.push({tag:"td", content: obj.foods[f].data[nutrindex]});
+					line.components.push({tag:"td", content: obj.foods[f].data[nutrindex],classes: "foodsheet"});
 				}
 			}
 			lines.push(line);
@@ -109,5 +110,5 @@ enyo.kind({
 		}
 		this.render();
 	},
-	
+
 });
